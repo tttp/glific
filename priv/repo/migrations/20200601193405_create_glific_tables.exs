@@ -457,12 +457,21 @@ defmodule Glific.Repo.Migrations.GlificTables do
       add :number_retries, :integer, default: 2
 
       # the shortcode of the message we need to send the user in case of an error
-      add :shortcode_error, :string
+      add :shortcode_error, :string, default: nil
+
+      # For valid answers, we give the option of either storing it directly in a table
+      # and/or invoking a callback function that will do the necessary transformations
+      # and storage
+
+      # For simple storage we just need the table name and column name
+      add :table_name, :string, default: nil
+      add :column_name, :string, default: nil
 
       # we might also want to store this response in a different entity
       # this callback will do the needful, including transforming the answer
       # we call this for valid answers only
-      add :callback, :string
+      add :callback_module, :string, default: nil
+      add :callback_function, :string, default: nil
 
       timestamps(type: :utc_datetime)
     end

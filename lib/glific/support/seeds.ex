@@ -9,6 +9,9 @@ defmodule Glific.Seeds do
     Messages.MessageMedia,
     Partners.Organization,
     Partners.Provider,
+    Questions.Question,
+    Questions.QuestionSet,
+    Question.QuestionsQuestionSet,
     Repo,
     Searches.SavedSearch,
     Settings,
@@ -636,6 +639,44 @@ defmodule Glific.Seeds do
   end
 
   @doc """
+  Create a global question set
+  """
+  @spec seed_question_sets() :: integer
+  def seed_question_sets do
+    Repo.insert!(%QuestionSets{
+          label: "Global Question Set",
+          number_questions_right: 0,
+                 })
+  end
+
+  @doc """
+  Language Question
+  """
+  @spec seed_question_language(integer) :: integer
+  def  seed_question_language(global_set_id) do
+    language_question_id =
+      Repo.insert!(%Questions{
+            label: "Determine user's preferred language",
+            shortcode: "language",
+            type: "text",
+            clean_answer: true,
+            strip_answer: true,
+            validate_answer: true,
+            valid_answers: ["hindi", "english", "हिंदी", "अंग्रेज़ी"],
+            number_retries: 2,
+            shortcode_error: nil,
+            table_name: "Glific.Contacts.Contact",
+            column_name: "language_id",
+            callback_module: "Glific.Contacts",
+            callback_function: "storeLanguage",
+                   })
+    Repo.insert!(%QuestionsQuestionSet{
+          question_id: language_question_id,
+          question_sets_id: global_set_id
+                 })
+  end
+
+  @doc """
   Function to populate some basic data that we need for the system to operate. We will
   split this function up into multiple different ones for test, dev and production
   """
@@ -660,5 +701,9 @@ defmodule Glific.Seeds do
     seed_messages_media()
 
     seed_saved_searches()
+
+    global_set_id = seed_question_sets()
+
+    seed_question_language(global_set_id)
   end
 end
