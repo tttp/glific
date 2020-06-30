@@ -10,8 +10,8 @@ defmodule Glific.Seeds do
     Partners.Organization,
     Partners.Provider,
     Questions.Question,
+    Questions.QuestionQuestionSet,
     Questions.QuestionSet,
-    Question.QuestionsQuestionSet,
     Repo,
     Searches.SavedSearch,
     Settings,
@@ -643,37 +643,38 @@ defmodule Glific.Seeds do
   """
   @spec seed_question_sets() :: integer
   def seed_question_sets do
-    Repo.insert!(%QuestionSets{
-          label: "Global Question Set",
-          number_questions_right: 0,
-                 })
+    Repo.insert!(%QuestionSet{
+      label: "Global Question Set",
+      number_questions_right: 0
+    })
   end
 
   @doc """
   Language Question
   """
   @spec seed_question_language(integer) :: integer
-  def  seed_question_language(global_set_id) do
+  def seed_question_language(global_set_id) do
     language_question_id =
-      Repo.insert!(%Questions{
-            label: "Determine user's preferred language",
-            shortcode: "language",
-            type: "text",
-            clean_answer: true,
-            strip_answer: true,
-            validate_answer: true,
-            valid_answers: ["hindi", "english", "हिंदी", "अंग्रेज़ी"],
-            number_retries: 2,
-            shortcode_error: nil,
-            table_name: "Glific.Contacts.Contact",
-            column_name: "language_id",
-            callback_module: "Glific.Contacts",
-            callback_function: "storeLanguage",
-                   })
-    Repo.insert!(%QuestionsQuestionSet{
-          question_id: language_question_id,
-          question_sets_id: global_set_id
-                 })
+      Repo.insert!(%Question{
+        label: "Determine user's preferred language",
+        shortcode: "language",
+        type: "text",
+        clean_answer: true,
+        strip_answer: true,
+        validate_answer: true,
+        valid_answers: ["hindi", "english", "हिंदी", "अंग्रेज़ी"],
+        number_retries: 2,
+        shortcode_error: nil,
+        table_name: "Glific.Contacts.Contact",
+        column_name: "language_id",
+        callback_module: "Glific.Contacts",
+        callback_function: "storeLanguage"
+      })
+
+    Repo.insert!(%QuestionQuestionSet{
+      question_id: language_question_id,
+      question_set_id: global_set_id
+    })
   end
 
   @doc """
