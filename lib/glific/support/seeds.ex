@@ -681,7 +681,7 @@ defmodule Glific.Seeds do
   Function to populate some basic data that we need for the system to operate. We will
   split this function up into multiple different ones for test, dev and production
   """
-  @spec seed :: nil
+  @spec seed() :: integer()
   def seed do
     lang = seed_language()
 
