@@ -51,7 +51,7 @@ defmodule Glific.Questions.Question do
     field :strip_answer, :boolean, default: false
     field :validate_answer, :boolean, default: false
 
-    field :valid_answers, {:array, :integer}, default: []
+    field :valid_answers, {:array, :string}, default: []
 
     field :number_retries, :integer
 

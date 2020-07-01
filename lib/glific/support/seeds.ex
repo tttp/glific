@@ -652,9 +652,9 @@ defmodule Glific.Seeds do
   @doc """
   Language Question
   """
-  @spec seed_question_language(integer) :: integer
-  def seed_question_language(global_set_id) do
-    language_question_id =
+  @spec seed_question_language(map()) :: integer
+  def seed_question_language(global_set) do
+    language_question =
       Repo.insert!(%Question{
         label: "Determine user's preferred language",
         shortcode: "language",
@@ -668,12 +668,12 @@ defmodule Glific.Seeds do
         table_name: "Glific.Contacts.Contact",
         column_name: "language_id",
         callback_module: "Glific.Contacts",
-        callback_function: "storeLanguage"
+        callback_function: "store_language"
       })
 
     Repo.insert!(%QuestionQuestionSet{
-      question_id: language_question_id,
-      question_set_id: global_set_id
+      question_id: language_question.id,
+      question_set_id: global_set.id
     })
   end
 
