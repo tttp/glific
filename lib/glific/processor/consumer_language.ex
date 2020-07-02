@@ -40,6 +40,14 @@ defmodule Glific.Processor.ConsumerLanguage do
   """
   @spec process_tag(Message.t(), Tag.t()) :: any
   def process_tag(message, tag) do
+    # will check if we need to do this if the conext in the valid option
+
+    Contacts.remove_context(message.sender, :global_language)
+    {:ok, question } = Repo.fetch_by(Question, %{shortcode: "language"})
+
+    {:ok, state} = Questions.process_message(question, message)
+
+
     {:ok, message_tag} = Repo.fetch_by(MessageTag, %{message_id: message.id, tag_id: tag.id})
     [language | _] = Settings.list_languages(%{label: message_tag.value})
 
@@ -49,6 +57,8 @@ defmodule Glific.Processor.ConsumerLanguage do
     Repo.update_all(query,
       set: [language_id: language.id, updated_at: DateTime.utc_now()]
     )
+
+
 
     session_template = Helper.get_session_message_template("language", language.id)
 
@@ -61,7 +71,6 @@ defmodule Glific.Processor.ConsumerLanguage do
 
     {:ok, message} =
       Messages.create_and_send_session_template(session_template, message.sender_id)
-
     message
   end
 end

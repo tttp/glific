@@ -21,7 +21,8 @@ defmodule Glific.Contacts.Contact do
     :status,
     :optin_time,
     :optout_time,
-    :last_message_at
+    :last_message_at,
+    :context
   ]
 
   @type t() :: %__MODULE__{
@@ -33,6 +34,7 @@ defmodule Glific.Contacts.Contact do
           provider_status: ContactStatus | nil,
           language_id: non_neg_integer | nil,
           language: Language.t() | Ecto.Association.NotLoaded.t() | nil,
+          context: String.t() | nil,
           optin_time: :utc_datetime | nil,
           optout_time: :utc_datetime | nil,
           last_message_at: :utc_datetime | nil,
@@ -46,6 +48,8 @@ defmodule Glific.Contacts.Contact do
 
     field :status, ContactStatus
     field :provider_status, ContactStatus
+
+    field :context, :string
 
     belongs_to :language, Language
 

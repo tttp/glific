@@ -186,6 +186,9 @@ defmodule Glific.Repo.Migrations.GlificTables do
       # contact language for templates and other communications
       add :language_id, references(:languages, on_delete: :restrict), null: false
 
+      # current contact context for the question and other communication
+      add :context, :string
+
       add :optin_time, :utc_datetime
       add :optout_time, :utc_datetime
       add :last_message_at, :utc_datetime

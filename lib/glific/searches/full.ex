@@ -10,11 +10,6 @@ defmodule Glific.Search.Full do
   and sanitizing the input. The two functions combined serve to augment
   the query with the link to the fulltext index
   """
-
-  @default_opts %{
-    contact_opts: %{offset: 0, limit: 20}
-  }
-
   @spec run(Ecto.Query.t(), String.t(), map()) :: Ecto.Query.t()
   def run(query, term, args) do
     run_helper(
@@ -49,10 +44,12 @@ defmodule Glific.Search.Full do
     end
   end
 
+
+
   @spec run_helper(Ecto.Query.t(), String.t(), map()) :: Ecto.Query.t()
   defp run_helper(query, "", _), do: query
 
-  defp run_helper(query, term, args) do
+  defp run_helper(query, term, {contact_opts: contact_opts}) do
     from q in query,
       join: id_and_rank in matching_contact_ids_and_ranks(term, args),
       on: id_and_rank.id == q.id,

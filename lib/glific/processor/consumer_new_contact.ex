@@ -7,9 +7,12 @@ defmodule Glific.Processor.ConsumerNewContact do
   use GenStage
 
   alias Glific.{
+    Contacts,
+    Contacts.Contact
     Messages.Message,
     Processor.Helper,
-    Tags.Tag
+    Tags.Tag,
+
   }
 
   @doc false
@@ -35,5 +38,8 @@ defmodule Glific.Processor.ConsumerNewContact do
   def process_tag(message, _) do
     # lets send the message first, so it goes out
     Helper.send_session_message_template(message, "new contact")
+
+    Contacts.set_context(message.sender, :global_language)
+
   end
 end

@@ -108,4 +108,56 @@ defmodule Glific.Questions do
   def change_question(%Question{} = question, attrs \\ %{}) do
     Question.changeset(question, attrs)
   end
+
+
+  def process_message(question, message) do
+      body = message.body
+      state = % { question: question, message: message}
+
+      perform_checks(state, message, [])
+        |> case do
+          {:ok, state} -> do_something_with_state(...)
+          {:error, reason} -> do_something_with_error(...)
+      end
+  end
+
+  defp get_checks(question) do
+    list =
+    if question.clean_answer do
+      [&clean_answer/1]
+    else
+      []
+    end
+
+
+    if question.validate_answer do
+      list = list ++ [&validate_answer/1]
+    end
+
+  end
+
+  defp perform_checks(state, []), do: {:ok, state}
+
+  defp perform_checks(state, [check_fun | remaining_checks]) do
+    case check_fun.(state) do
+      {:ok, new_state} -> perform_checks(new_state, remaining_checks)
+      {:error, _} = error -> error
+    end
+  end
+
+  defp clean_answer(state) do
+    body =
+    state.message.body
+    |> String.replace(~r/[\p{P}\p{S}\p{Z}\p{C}]+/u, "")
+    |> String.downcase()
+    |> String.trim()
+
+    {:ok, put_in(state, [:message, :body], body)}
+  end
+
+  defp validate_answer(state) do
+
+  end
+
+
 end

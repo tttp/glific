@@ -233,4 +233,11 @@ defmodule Glific.Contacts do
          true <- Timex.diff(DateTime.utc_now(), contact.last_message_at, :hours) < 24,
          do: true
   end
+
+  @doc """
+  Set the context current context for a contact
+  """
+  def set_context(contact, context) do
+    update_contact(contact, %{:context, context})
+  end
 end
